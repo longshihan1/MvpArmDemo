@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Parcel;
 
-import com.longshihan.arm.mvp.IPresenter;
+import com.longshihan.arm.base.App;
 
 import org.simple.eventbus.EventBus;
 
@@ -17,7 +17,6 @@ import org.simple.eventbus.EventBus;
 public class ActivityDelegateImpl implements ActivityDelegate {
     private Activity mActivity;
     private IActivity iActivity;
-    private IPresenter iPresenter;
 
     public ActivityDelegateImpl(Activity activity) {
         this.mActivity = activity;
@@ -28,8 +27,7 @@ public class ActivityDelegateImpl implements ActivityDelegate {
     public void onCreate(Bundle savedInstanceState) {
         if (iActivity.useEventBus())//如果要使用eventbus请将此方法返回true
             EventBus.getDefault().register(mActivity);//注册到事件主线
-        this.iPresenter = iActivity.obtainPresenter();
-        iActivity.setPresenter(iPresenter);
+        iActivity.setupActivityComponent(((App) mActivity.getApplication()).getAppComponent());
     }
 
     @Override
@@ -61,10 +59,8 @@ public class ActivityDelegateImpl implements ActivityDelegate {
     public void onDestroy() {
         if (iActivity != null && iActivity.useEventBus())//如果要使用eventbus请将此方法返回true
             EventBus.getDefault().unregister(mActivity);
-        if (iPresenter != null) iPresenter.onDestroy(); //释放资源
         this.iActivity = null;
         this.mActivity = null;
-        this.iPresenter = null;
     }
 
     @Override
@@ -80,7 +76,6 @@ public class ActivityDelegateImpl implements ActivityDelegate {
     protected ActivityDelegateImpl(Parcel in) {
         this.mActivity = in.readParcelable(Activity.class.getClassLoader());
         this.iActivity = in.readParcelable(IActivity.class.getClassLoader());
-        this.iPresenter = in.readParcelable(IPresenter.class.getClassLoader());
     }
 
     public static final Creator<ActivityDelegateImpl> CREATOR = new Creator<ActivityDelegateImpl>() {

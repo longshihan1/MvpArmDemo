@@ -7,33 +7,25 @@ package com.longshihan.arm.mvp;
  */
 
 public interface IRepositoryManager {
-    /**
-     * 根据传入的Class创建对应的仓库
-     *
-     * @param repository
-     * @param <T>
-     * @return
-     */
-    <T extends IModel> T createRepository(Class<T> repository);
+
 
     /**
-     * 根据传入的Class创建对应的Retrift service
+     * 根据传入的Class获取对应的Retrift service
      *
      * @param service
      * @param <T>
      * @return
      */
-    <T> T createRetrofitService(Class<T> service);
+    <T> T obtainRetrofitService(Class<T> service);
 
     /**
-     * 根据传入的Class创建对应的RxCache service
+     * 根据传入的Class获取对应的RxCache service
      *
      * @param cache
      * @param <T>
      * @return
      */
-    <T> T createCacheService(Class<T> cache);
-
+    <T> T obtainCacheService(Class<T> cache);
     /**
      * 清理所有缓存
      */

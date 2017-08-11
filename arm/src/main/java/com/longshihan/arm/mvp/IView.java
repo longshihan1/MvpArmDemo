@@ -1,5 +1,7 @@
 package com.longshihan.arm.mvp;
 
+import android.content.Intent;
+
 /**
  * Created by jess on 25/02/2017 19:18
  * Contact with jess.yan.effort@gmail.com
@@ -24,11 +26,13 @@ public interface IView {
      */
     void showMessage(String message);
 
-
     /**
-     * 处理消息,这里面和handler的原理一样,通过swith(what),做不同的操作
-     * @param message
+     * 跳转activity
      */
-    void handleMessage(Message message);
+    void launchActivity(Intent intent);
+    /**
+     * 杀死自己
+     */
+    void killMyself();
 
 }

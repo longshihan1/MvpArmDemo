@@ -1,7 +1,5 @@
 package com.longshihan.arm.mvp;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +24,6 @@ public class RepositoryManager implements IRepositoryManager {
     //lazy是懒加载
     private Lazy<Retrofit> mRetrofit;
     private Lazy<RxCache> mRxCache;
-    private final Map<String, IModel> mRepositoryCache = new HashMap<>();
     private final Map<String, Object> mRetrofitServiceCache = new HashMap<>();
     private final Map<String, Object> mCacheServiceCache = new HashMap<>();
 
@@ -36,44 +33,17 @@ public class RepositoryManager implements IRepositoryManager {
         this.mRxCache = rxCache;
     }
 
-    /**
-     * 根据传入的Class创建对应的仓库
-     * 使用构造器构造新对象
-     * @param repository
-     * @param <T>
-     * @return
-     */
-    @Override
-    public <T extends IModel> T createRepository(Class<T> repository) {
-        T repositoryInstance;
-        synchronized (mRepositoryCache) {
-            repositoryInstance = (T) mRepositoryCache.get(repository.getName());
-            if (repositoryInstance == null) {//不存在就添加
-                Constructor<? extends IModel> constructor = findConstructorForClass(repository);
-                try {
-                    repositoryInstance = (T) constructor.newInstance(this);
-                } catch (InstantiationException e) {
-                    throw new RuntimeException("Unable to invoke " + constructor, e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException("Unable to invoke " + constructor, e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException("create repository error", e);
-                }
-                mRepositoryCache.put(repository.getName(), repositoryInstance);
-            }
-        }
-        return repositoryInstance;
-    }
+
 
     /**
-     * 根据传入的Class创建对应的Retrift service
+     * 根据传入的Class获取对应的Retrift service
      *
      * @param service
      * @param <T>
      * @return
      */
     @Override
-    public <T> T createRetrofitService(Class<T> service) {
+    public <T> T obtainRetrofitService(Class<T> service) {
         T retrofitService;
         synchronized (mRetrofitServiceCache) {
             retrofitService = (T) mRetrofitServiceCache.get(service.getName());
@@ -86,14 +56,14 @@ public class RepositoryManager implements IRepositoryManager {
     }
 
     /**
-     * 根据传入的Class创建对应的RxCache service
+     * 根据传入的Class获取对应的RxCache service
      *
      * @param cache
      * @param <T>
      * @return
      */
     @Override
-    public <T> T createCacheService(Class<T> cache) {
+    public <T> T obtainCacheService(Class<T> cache) {
         T cacheService;
         synchronized (mCacheServiceCache) {
             cacheService = (T) mCacheServiceCache.get(cache.getName());
@@ -104,6 +74,7 @@ public class RepositoryManager implements IRepositoryManager {
         }
         return cacheService;
     }
+
     /**
      * 清理所有缓存
      */
@@ -112,19 +83,4 @@ public class RepositoryManager implements IRepositoryManager {
         mRxCache.get().evictAll();
     }
 
-
-    private static Constructor<? extends IModel> findConstructorForClass(Class<?> cls) {
-        Constructor<? extends IModel> bindingCtor;
-        String clsName = cls.getName();
-
-        try {
-            //noinspection unchecked
-            bindingCtor = (Constructor<? extends IModel>) cls.getConstructor(IRepositoryManager.class);
-
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Unable to find constructor for " + clsName, e);
-        }
-
-        return bindingCtor;
-    }
 }

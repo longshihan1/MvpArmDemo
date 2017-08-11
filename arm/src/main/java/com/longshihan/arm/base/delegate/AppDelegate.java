@@ -101,7 +101,6 @@ public class AppDelegate implements App, AppLifecycles {
 
         GlobalConfigModule.Builder builder = GlobalConfigModule
                 .builder();
-
         for (ConfigModule module : modules) {
             module.applyOptions(context, builder);
         }
