@@ -3,7 +3,7 @@ package com.longshihan.mvparm.app.component;
 import com.longshihan.arm.dagger.component.AppComponent;
 import com.longshihan.arm.dagger.scope.ActivityScope;
 import com.longshihan.mvparm.app.module.UserModule;
-import com.longshihan.mvparm.mvp.ui.activity.UserActivity;
+import com.longshihan.mvparm.mvp.ui.fragment.UserFragment;
 
 import dagger.Component;
 
@@ -14,6 +14,6 @@ import dagger.Component;
  */
 @ActivityScope
 @Component(modules = UserModule.class, dependencies = AppComponent.class)
-public interface UserComponent {
-    void inject(UserActivity activity);
+public interface UserFragComponent {
+    void inject(UserFragment fragment);
 }

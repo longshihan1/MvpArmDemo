@@ -53,7 +53,7 @@ public class UserPersenter extends BasePresenter<UserContract.Model,UserContract
     public void requestUsers(final boolean pullToRefresh) {
         if (mAdapter == null) {
             mAdapter = new UserAdapter(mUsers);
-            mRootView.setAdapter(mAdapter);//设置Adapter
+            getView().setAdapter(mAdapter);//设置Adapter
         }
 
 
@@ -103,15 +103,10 @@ public class UserPersenter extends BasePresenter<UserContract.Model,UserContract
             @Override
             public void run() throws Exception {
                 if (pullToRefresh) {
-                    mRootView.hideLoading();//隐藏下拉刷新的进度条
-                    //因为hideLoading,为默认方法,直接可以调用所以不需要发送消息给handleMessage()来处理,
-                    //HandleMessageToTarget()的原理就是发送消息并回收消息
-                    //调用默认方法后不需要调用HandleMessageToTarget(),但是如果后面对view没有其他操作了请调用message.recycle()回收消息
-
+                    getView().hideLoading();//隐藏下拉刷新的进度条
                 } else {
                     //隐藏上拉加载更多的进度条
-                   //方法最后必须调HandleMessageToTarget,将消息所有引用清空后回收进消息池
-                    mRootView.endLoadMore();
+                    getView().endLoadMore();
                 }
             }
         }).subscribe(new ErrorHandleSubscriber<List<User>>(mErrorHandler) {

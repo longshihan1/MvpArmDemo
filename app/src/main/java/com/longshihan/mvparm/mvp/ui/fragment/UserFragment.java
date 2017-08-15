@@ -1,17 +1,22 @@
-package com.longshihan.mvparm.mvp.ui.activity;
+package com.longshihan.mvparm.mvp.ui.fragment;
+
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.longshihan.arm.base.BaseActivity;
+import com.longshihan.arm.base.BaseFragment;
 import com.longshihan.arm.base.DefaultAdapter;
 import com.longshihan.arm.dagger.component.AppComponent;
 import com.longshihan.arm.utils.UiUtils;
 import com.longshihan.mvparm.R;
-import com.longshihan.mvparm.app.component.DaggerUserComponent;
+import com.longshihan.mvparm.app.component.DaggerUserFragComponent;
 import com.longshihan.mvparm.app.module.UserModule;
 import com.longshihan.mvparm.mvp.contract.UserContract;
 import com.longshihan.mvparm.mvp.persenter.UserPersenter;
@@ -22,36 +27,18 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
-public class UserActivity extends BaseActivity<UserPersenter> implements UserContract.View,
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class UserFragment extends BaseFragment<UserPersenter> implements UserContract.View,
         SwipeRefreshLayout.OnRefreshListener {
-
     private boolean isLoadingMore;
     private RxPermissions mRxPermissions;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
 
-    @Override
-    public void setupActivityComponent(AppComponent appComponent) {
-        this.mRxPermissions = new RxPermissions(this);
-        DaggerUserComponent
-                .builder()
-                .appComponent(appComponent)
-                .userModule(new UserModule(this))
-                .build()
-                .inject(this);
-    }
-
-    @Override
-    public int initView(Bundle savedInstanceState) {
-        return R.layout.activity_user;
-    }
-
-    @Override
-    public void initData(Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        mPresenter.requestUsers(true);//打开app时自动加载列表
-
+    public UserFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -59,9 +46,39 @@ public class UserActivity extends BaseActivity<UserPersenter> implements UserCon
         mPresenter.requestUsers(true);
     }
 
-    private void initRecycleView() {
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        UiUtils.configRecycleView(mRecyclerView, new GridLayoutManager(this, 2));
+    @Override
+    public View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view=inflater.inflate(R.layout.activity_user, container, false);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        return view;
+    }
+
+    @Override
+    public void initData(Bundle savedInstanceState) {
+        mPresenter.requestUsers(true);//打开app时自动加载列表
+    }
+
+
+    @Override
+    public void setupFragmentComponent(AppComponent appComponent) {
+        this.mRxPermissions = new RxPermissions(mActivity);
+        DaggerUserFragComponent.builder()
+                .appComponent(appComponent)
+                .userModule(new UserModule(this))
+                .build()
+                .inject(this);
+       /* DaggerUserComponent
+                .builder()
+                .appComponent(appComponent)
+                .userModule(new UserModule(this))
+                .build()
+                .inject(this);*/
+
+    }
+
+    @Override
+    public void setData(Object data) {
 
     }
 
@@ -89,7 +106,6 @@ public class UserActivity extends BaseActivity<UserPersenter> implements UserCon
         UiUtils.snackbarText(message);
     }
 
-
     @Override
     public void launchActivity(Intent intent) {
         UiUtils.startActivity(intent);
@@ -97,14 +113,19 @@ public class UserActivity extends BaseActivity<UserPersenter> implements UserCon
 
     @Override
     public void killMyself() {
-        finish();
-    }
 
+    }
 
     @Override
     public void setAdapter(DefaultAdapter adapter) {
         mRecyclerView.setAdapter(adapter);
         initRecycleView();
+    }
+
+    private void initRecycleView() {
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        UiUtils.configRecycleView(mRecyclerView, new GridLayoutManager(mActivity, 2));
+
     }
 
     @Override
@@ -120,14 +141,5 @@ public class UserActivity extends BaseActivity<UserPersenter> implements UserCon
     @Override
     public RxPermissions getRxPermissions() {
         return mRxPermissions;
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        DefaultAdapter.releaseAllHolder(mRecyclerView);//super.onDestroy()之后会unbind,
-        // 所有view被置为null,所以必须在之前调用
-        super.onDestroy();
-        this.mRxPermissions = null;
     }
 }

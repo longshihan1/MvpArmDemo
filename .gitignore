@@ -5,5 +5,12 @@
 /.idea/libraries
 .DS_Store
 /build
+.idea
 /captures
 .externalNativeBuild
+.idea/markdown-navigator/
+app/libs/
+app/src/main/res/drawable/
+arm/libs/
+arm/src/main/java/com/longshihan/arm/strategy/x/
+arm/src/main/res/drawable/

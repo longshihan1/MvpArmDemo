@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.longshihan.arm.dagger.component.AppComponent;
 import com.longshihan.arm.mvp.IPresenter;
 
 /**
@@ -14,15 +15,14 @@ import com.longshihan.arm.mvp.IPresenter;
  */
 
 public interface IFragment <P extends IPresenter> {
-    boolean useEventBus();
 
-    View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
-    void initData(Bundle savedInstanceState);
+    /**
+     * 提供AppComponent(提供所有的单例对象)给实现类，进行Component依赖
+     * @param appComponent
+     */
+    void setupFragmentComponent(AppComponent appComponent);
 
-    P obtainPresenter();
-
-    void setPresenter(P presenter);
 
     /**
      * 此方法是让外部调用使fragment做一些操作的,比如说外部的activity想让fragment对象执行一些方法,
@@ -30,10 +30,18 @@ public interface IFragment <P extends IPresenter> {
      * 方法中就可以switch做不同的操作,这样就可以用统一的入口方法做不同的事
      *
      * 使用此方法时请注意调用时fragment的生命周期,如果调用此setData方法时onCreate还没执行
-     * setData里却调用了presenter的方法时,是会报空的,因为presenter是在onCreate方法中创建的
+     * setData里却调用了presenter的方法时,是会报空的,因为dagger注入是在onCreated方法中执行的,然后才创建的presenter
      * 如果要做一些初始化操作,可以不必让外部调setData,在initData中初始化就可以了
      *
      * @param data
      */
     void setData(Object data);
+
+
+    boolean useEventBus();
+
+    View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
+
+    void initData(Bundle savedInstanceState);
+
 }

@@ -10,6 +10,8 @@ import com.longshihan.mvparm.mvp.model.entity.User;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.functions.Function;
@@ -27,6 +29,7 @@ import io.rx_cache2.Reply;
 public class UserModel extends BaseModel implements UserContract.Model {
     public static final int USERS_PER_PAGE = 10;
 
+    @Inject
     public UserModel(IRepositoryManager repositoryManager) {
         super(repositoryManager);
     }
