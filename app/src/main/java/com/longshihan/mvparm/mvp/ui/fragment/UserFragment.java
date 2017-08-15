@@ -3,7 +3,6 @@ package com.longshihan.mvparm.mvp.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +16,9 @@ import com.longshihan.arm.dagger.component.AppComponent;
 import com.longshihan.arm.utils.UiUtils;
 import com.longshihan.mvparm.R;
 import com.longshihan.mvparm.app.component.DaggerUserFragComponent;
-import com.longshihan.mvparm.app.module.UserModule;
+import com.longshihan.mvparm.app.module.UserFModule;
 import com.longshihan.mvparm.mvp.contract.UserContract;
-import com.longshihan.mvparm.mvp.persenter.UserPersenter;
+import com.longshihan.mvparm.mvp.persenter.UserFPersenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import io.reactivex.Observable;
@@ -27,10 +26,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class UserFragment extends BaseFragment<UserPersenter> implements UserContract.View,
+
+public class UserFragment extends BaseFragment<UserFPersenter> implements UserContract.View,
         SwipeRefreshLayout.OnRefreshListener {
     private boolean isLoadingMore;
     private RxPermissions mRxPermissions;
@@ -65,7 +62,7 @@ public class UserFragment extends BaseFragment<UserPersenter> implements UserCon
         this.mRxPermissions = new RxPermissions(mActivity);
         DaggerUserFragComponent.builder()
                 .appComponent(appComponent)
-                .userModule(new UserModule(this))
+                .userFModule(new UserFModule(this))
                 .build()
                 .inject(this);
        /* DaggerUserComponent
