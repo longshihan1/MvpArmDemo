@@ -17,7 +17,6 @@ public interface IActivity{
      * @param appComponent
      */
     void setupActivityComponent(AppComponent appComponent);
-    boolean useEventBus();
 
     /**
      * 如果initView返回0,框架则不会调用{@link android.app.Activity#setContentView(int)}

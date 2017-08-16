@@ -17,9 +17,6 @@ import com.longshihan.mvparm.mvp.contract.UserContract;
 import com.longshihan.mvparm.mvp.persenter.UserPersenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
 public class UserActivity extends BaseActivity<UserPersenter> implements UserContract.View,
@@ -39,6 +36,8 @@ public class UserActivity extends BaseActivity<UserPersenter> implements UserCon
                 .userModule(new UserModule(this))
                 .build()
                 .inject(this);
+
+
     }
 
     @Override
@@ -68,14 +67,6 @@ public class UserActivity extends BaseActivity<UserPersenter> implements UserCon
     @Override
     public void showLoading() {
         Timber.tag(TAG).w("showLoading");
-        Observable.just(1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Integer>() {
-                    @Override
-                    public void accept(Integer integer) throws Exception {
-                        mSwipeRefreshLayout.setRefreshing(true);
-                    }
-                });
     }
 
     @Override

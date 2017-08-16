@@ -56,22 +56,6 @@ public class UserFPersenter extends BasePresenter<UserContract.Model,UserContrac
             getView().setAdapter(mAdapter);//设置Adapter
         }
 
-
-        //权限管理使用注解的形式或者是rx的形式
-       /* //请求外部存储权限用于适配android6.0的权限管理机制
-        PermissionUtil.externalStorage(new PermissionUtil.RequestPermission() {
-            @Override
-            public void onRequestPermissionSuccess() {
-                //request permission success, do something.
-            }
-
-            @Override
-            public void onRequestPermissionFailure() {
-                msg.getTarget().showMessage("Request permissons failure");
-            }
-        }, (RxPermissions) msg.objs[1], mErrorHandler);*/
-
-
         if (pullToRefresh) lastUserId = 1;//下拉刷新默认只请求第一页,页数
 
         //关于RxCache缓存库的使用请参考 http://www.jianshu.com/p/b58ef6b0624b

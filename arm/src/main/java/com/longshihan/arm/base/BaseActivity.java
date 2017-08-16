@@ -35,15 +35,7 @@ public abstract class BaseActivity <P extends IPresenter> extends AppCompatActiv
         }
         initData(savedInstanceState);
     }
-    /**
-     * 是否使用eventBus,默认为使用(true)，
-     *
-     * @return
-     */
-    @Override
-    public boolean useEventBus() {
-        return true;
-    }
+
 
     @Override
     protected void onDestroy() {

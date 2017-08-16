@@ -15,13 +15,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.jessyan.rxerrorhandler.core.RxErrorHandler;
-import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber;
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay;
 
 /**
@@ -42,11 +42,9 @@ public class UserPersenter extends BasePresenter<UserContract.Model,UserContract
     private int preEndIndex;
 
     @Inject
-    public UserPersenter(UserContract.Model model, UserContract.View rootView, RxErrorHandler handler
-            , AppManager appManager, Application application) {
+    public UserPersenter(UserContract.Model model, UserContract.View rootView,AppManager appManager, Application application) {
         super(model, rootView);
         this.mApplication = application;
-        this.mErrorHandler = handler;
         this.mAppManager = appManager;
     }
 
@@ -109,7 +107,12 @@ public class UserPersenter extends BasePresenter<UserContract.Model,UserContract
                     getView().endLoadMore();
                 }
             }
-        }).subscribe(new ErrorHandleSubscriber<List<User>>(mErrorHandler) {
+        }).subscribe(new Observer<List<User>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
             @Override
             public void onNext(List<User> users) {
                 lastUserId = users.get(users.size() - 1).getId();//记录最后一个id,用于下一次请求
@@ -123,6 +126,16 @@ public class UserPersenter extends BasePresenter<UserContract.Model,UserContract
                     mAdapter.notifyDataSetChanged();
                 else
                     mAdapter.notifyItemRangeInserted(preEndIndex, users.size());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                //处理数据
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
 

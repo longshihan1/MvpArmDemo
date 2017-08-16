@@ -6,8 +6,6 @@ import android.os.Parcel;
 
 import com.longshihan.arm.base.App;
 
-import org.simple.eventbus.EventBus;
-
 /**
  * @author Administrator
  * @time 2017/8/10 17:03
@@ -25,8 +23,6 @@ public class ActivityDelegateImpl implements ActivityDelegate {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (iActivity.useEventBus())//如果要使用eventbus请将此方法返回true
-            EventBus.getDefault().register(mActivity);//注册到事件主线
         iActivity.setupActivityComponent(((App) mActivity.getApplication()).getAppComponent());
     }
 
@@ -57,8 +53,6 @@ public class ActivityDelegateImpl implements ActivityDelegate {
 
     @Override
     public void onDestroy() {
-        if (iActivity != null && iActivity.useEventBus())//如果要使用eventbus请将此方法返回true
-            EventBus.getDefault().unregister(mActivity);
         this.iActivity = null;
         this.mActivity = null;
     }

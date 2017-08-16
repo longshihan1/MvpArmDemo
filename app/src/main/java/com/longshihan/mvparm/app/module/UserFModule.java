@@ -1,8 +1,10 @@
 package com.longshihan.mvparm.app.module;
 
+import android.app.Activity;
+import android.support.v4.app.Fragment;
+
 import com.longshihan.arm.dagger.scope.FragmentScope;
-import com.longshihan.mvparm.mvp.contract.UserContract;
-import com.longshihan.mvparm.mvp.model.UserfModel;
+import com.longshihan.arm.mvp.IView;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,25 +15,18 @@ import dagger.Provides;
 
 @Module
 public class UserFModule {
-    private UserContract.View view;
+    private IView view;
+    private Fragment mFragment;
 
-    /**
-     * 构建UserModule时,将View的实现类传进来,这样就可以提供View的实现类给presenter
-     * @param view
-     */
-    public UserFModule(UserContract.View view) {
-        this.view = view;
+    public UserFModule(Fragment fragment) {
+        this.mFragment = fragment;
     }
 
-    @FragmentScope
+
     @Provides
-    UserContract.View provideUserView(){
-        return this.view;
+    @FragmentScope
+    public Activity provideActivity() {
+        return mFragment.getActivity();
     }
 
-    @FragmentScope
-    @Provides
-    UserContract.Model provideUserModel(UserfModel model){
-        return model;
-    }
 }

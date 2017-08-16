@@ -17,7 +17,6 @@ import java.util.Map;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import okhttp3.OkHttpClient;
 
 /**
@@ -31,8 +30,6 @@ import okhttp3.OkHttpClient;
 public interface AppComponent {
     Application application();
 
-    //RXjava错误管理类
-    RxErrorHandler rxErrorHandler();
 
     //OKHttp
     OkHttpClient okHttpClient();
